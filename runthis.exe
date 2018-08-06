@@ -1,0 +1,16 @@
+
+#!/bin/bash
+
+#tmux
+wget http://ipa.shared.example.opentlc.com/ipa/config/ca.crt -O /root/ipa-ca.crt
+ansible localhost,all -m shell -a 'export GUID=`hostname | cut -d"." -f2`; echo "export GUID=$GUID" >> $HOME/.bashrc'
+
+sleep 2
+
+sed -i  "s/GUID/$GUID/ ; s/'GUID'/$GUID/ ; s/"GUID"/$GUID/" /etc/ansible/hosts
+
+sleep 5
+
+ansible all -m ping
+
+ansible-playbook -f 20 /usr/share/ansible/openshift-ansible/playbooks/prerequisites.yml
